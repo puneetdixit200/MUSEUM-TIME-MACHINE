@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  CENTURY_POETS,
   getAgeIntensity,
   getCenturyRange,
   getEraForYear,
@@ -40,7 +41,7 @@ describe("eraConfig", () => {
     expect(getPoetsForYear(1862)).toEqual(
       expect.arrayContaining(["Emily Dickinson", "Walt Whitman"]),
     );
-    expect(getPoetsForYear(1923)).toContain("Robert Frost");
+    expect(getPoetsForYear(1923)).toContain("Wilfred Owen");
   });
 
   it("rotates poet search order by exact year to avoid repeating one author", () => {
@@ -53,6 +54,17 @@ describe("eraConfig", () => {
     const firstChoice = getPoetsForYear(1603)[0];
 
     expect(getPoetsForYear(1603, [firstChoice])).not.toContain(firstChoice);
+  });
+
+  it("keeps large PoetryDB author pools for varied visits", () => {
+    expect(CENTURY_POETS[1500].length).toBeGreaterThanOrEqual(8);
+    expect(CENTURY_POETS[1600].length).toBeGreaterThanOrEqual(18);
+    expect(CENTURY_POETS[1700].length).toBeGreaterThanOrEqual(18);
+    expect(CENTURY_POETS[1800].length).toBeGreaterThanOrEqual(45);
+    expect(CENTURY_POETS[1900].length).toBeGreaterThanOrEqual(10);
+    expect(new Set(Object.values(CENTURY_POETS).flat()).size).toBeGreaterThanOrEqual(
+      80,
+    );
   });
 
   it("ages the page more heavily for older years", () => {
