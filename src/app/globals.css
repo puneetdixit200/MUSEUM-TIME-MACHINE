@@ -73,12 +73,13 @@ button {
 
 .artwork-layer {
   position: absolute;
-  inset: -2.5rem;
-  width: calc(100% + 5rem);
-  height: calc(100% + 5rem);
-  object-fit: cover;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
   opacity: 0;
-  transform: scale(1.04);
+  transform: none;
   filter:
     blur(var(--age-blur))
     brightness(0.54)
@@ -86,8 +87,7 @@ button {
     sepia(var(--age-sepia));
   transition:
     opacity 1200ms ease,
-    filter 1400ms ease,
-    transform 6000ms ease;
+    filter 1400ms ease;
 }
 
 .artwork-layer-current.is-visible {
@@ -637,11 +637,9 @@ button {
 @keyframes art-arrive {
   from {
     opacity: 0;
-    transform: scale(1.1);
   }
   to {
     opacity: 1;
-    transform: scale(1.04);
   }
 }
 

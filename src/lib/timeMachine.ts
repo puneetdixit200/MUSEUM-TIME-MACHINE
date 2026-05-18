@@ -122,6 +122,46 @@ export const FALLBACK_POEMS: PoemData[] = [
     ],
   },
   {
+    title: "On His Blindness",
+    author: "John Milton",
+    source: "Curated fallback",
+    lineCount: 14,
+    lines: [
+      "When I consider how my light is spent,",
+      "Ere half my days, in this dark world and wide,",
+      "And that one Talent which is death to hide",
+      "Lodged with me useless, though my Soul more bent",
+      "To serve therewith my Maker, and present",
+      "My true account, lest he returning chide;",
+      "Doth God exact day-labour, light denied?",
+      "I fondly ask. But patience, to prevent",
+      "That murmur, soon replies, God doth not need",
+      "Either man's work or his own gifts; who best",
+      "Bear his mild yoke, they serve him best.",
+      "They also serve who only stand and wait.",
+    ],
+  },
+  {
+    title: "Ode on Solitude",
+    author: "Alexander Pope",
+    source: "Curated fallback",
+    lineCount: 20,
+    lines: [
+      "Happy the man, whose wish and care",
+      "A few paternal acres bound,",
+      "Content to breathe his native air,",
+      "In his own ground.",
+      "Whose herds with milk, whose fields with bread,",
+      "Whose flocks supply him with attire,",
+      "Whose trees in summer yield him shade,",
+      "In winter fire.",
+      "Blest, who can unconcernedly find",
+      "Hours, days, and years slide soft away,",
+      "In health of body, peace of mind,",
+      "Quiet by day.",
+    ],
+  },
+  {
     title: "Aedh Wishes for the Cloths of Heaven",
     author: "W. B. Yeats",
     source: "Curated fallback",
@@ -158,6 +198,10 @@ export const FALLBACK_POEMS: PoemData[] = [
     ],
   },
 ];
+
+const EARLY_FALLBACK_POEMS = FALLBACK_POEMS.slice(0, 3);
+const ROMANTIC_FALLBACK_POEMS = FALLBACK_POEMS.slice(2, 4);
+const MODERN_FALLBACK_POEMS = FALLBACK_POEMS.slice(3);
 
 export function clampYear(year: number): number {
   return Math.min(MAX_YEAR, Math.max(MIN_YEAR, Math.round(year)));
@@ -198,13 +242,15 @@ export function createFallbackArtwork(year: number): ArtworkData {
 }
 
 export function createFallbackPoem(year: number): PoemData {
+  const choose = (poems: PoemData[]) => poems[(Math.abs(year) + 1) % poems.length];
+
   if (year < 1750) {
-    return FALLBACK_POEMS[0];
+    return choose(EARLY_FALLBACK_POEMS);
   }
 
   if (year < 1900) {
-    return FALLBACK_POEMS[1];
+    return choose(ROMANTIC_FALLBACK_POEMS);
   }
 
-  return FALLBACK_POEMS[2];
+  return choose(MODERN_FALLBACK_POEMS);
 }

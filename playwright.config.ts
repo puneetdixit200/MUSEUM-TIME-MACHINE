@@ -12,7 +12,7 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   webServer: {
-    command: "npm run dev -- --port 3127",
+    command: "npm run start -- --port 3127",
     url: "http://localhost:3127",
     reuseExistingServer: false,
     timeout: 120_000,

@@ -39,6 +39,12 @@ describe("eraConfig", () => {
     expect(getPoetsForYear(1923)).toContain("Robert Frost");
   });
 
+  it("rotates poet search order by exact year to avoid repeating one author", () => {
+    expect(getPoetsForYear(1503)[0]).not.toBe("William Shakespeare");
+    expect(getPoetsForYear(1603)[0]).not.toBe("William Shakespeare");
+    expect(getPoetsForYear(1604)[0]).not.toBe(getPoetsForYear(1603)[0]);
+  });
+
   it("ages the page more heavily for older years", () => {
     expect(getAgeIntensity(1100)).toBeGreaterThan(getAgeIntensity(1700));
     expect(getAgeIntensity(1700)).toBeGreaterThan(getAgeIntensity(2000));

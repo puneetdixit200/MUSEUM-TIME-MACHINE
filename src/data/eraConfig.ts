@@ -193,7 +193,13 @@ export function getEraForYear(year: number): EraConfig {
 
 export function getPoetsForYear(year: number): string[] {
   const { start } = getCenturyRange(year);
-  return CENTURY_POETS[start] ?? getEraForYear(year).poets;
+  const poets = CENTURY_POETS[start] ?? getEraForYear(year).poets;
+  if (poets.length <= 1) {
+    return poets;
+  }
+
+  const offset = Math.abs(Math.round(year)) % poets.length;
+  return [...poets.slice(offset), ...poets.slice(0, offset)];
 }
 
 export function getHistoricalEventsForYear(year: number): string[] {

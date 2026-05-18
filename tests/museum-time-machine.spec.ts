@@ -1,5 +1,16 @@
 import { expect, test } from "@playwright/test";
 
+test("serves varied early-era poetry instead of defaulting to Shakespeare", async ({
+  request,
+}) => {
+  const response = await request.get("/api/poem?year=1503");
+  expect(response.ok()).toBe(true);
+
+  const poem = (await response.json()) as { author: string; lines: string[] };
+  expect(poem.author).not.toBe("William Shakespeare");
+  expect(poem.lines.length).toBeGreaterThan(5);
+});
+
 test("loads the museum time machine and renders an era", async ({ page }, testInfo) => {
   await page.goto("/");
 
@@ -12,6 +23,14 @@ test("loads the museum time machine and renders an era", async ({ page }, testIn
     .poll(async () => page.locator(".poem-lines p").count())
     .toBeGreaterThan(5);
   await expect(page.locator(".artwork-layer-current")).toBeVisible();
+  await expect(page.locator(".artwork-layer-current")).toHaveCSS(
+    "object-fit",
+    "contain",
+  );
+  await expect(page.locator(".artwork-layer-current")).toHaveCSS(
+    "transform",
+    "none",
+  );
 
   await page.screenshot({
     path: `test-results/museum-time-machine-${testInfo.project.name}.png`,

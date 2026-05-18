@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   clampYear,
   createFallbackArtwork,
+  createFallbackPoem,
   limitPoemLines,
   normalizeAicImageUrl,
   timelinePercent,
@@ -43,5 +44,12 @@ describe("timeMachine helpers", () => {
       imageUrl: expect.stringMatching(/^https:\/\//),
       source: "Curated fallback",
     });
+  });
+
+  it("rotates fallback poems instead of always returning Shakespeare", () => {
+    expect(createFallbackPoem(1503).author).not.toBe("William Shakespeare");
+    expect(createFallbackPoem(1604).author).not.toBe(
+      createFallbackPoem(1603).author,
+    );
   });
 });
