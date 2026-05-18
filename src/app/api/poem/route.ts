@@ -1,4 +1,4 @@
-import { getPoetsForYear } from "@/data/eraConfig";
+import { getAvailablePoetsForYear } from "@/data/eraConfig";
 import {
   type PoemData,
   createFallbackPoem,
@@ -51,10 +51,20 @@ function choosePoem(poems: PoetryDbPoem[], year: number): PoetryDbPoem | null {
   return readablePoems[Math.abs(year) % readablePoems.length];
 }
 
+function getExcludedAuthors(searchParams: URLSearchParams): string[] {
+  const repeatedAuthors = searchParams.getAll("excludeAuthor");
+  const combinedAuthors = (searchParams.get("excludeAuthors") ?? "")
+    .split(",")
+    .map((author) => author.trim());
+
+  return [...repeatedAuthors, ...combinedAuthors].filter(Boolean);
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const year = Number(searchParams.get("year")) || 1889;
-  const poets = getPoetsForYear(year);
+  const excludedAuthors = getExcludedAuthors(searchParams);
+  const poets = getAvailablePoetsForYear(year, excludedAuthors);
 
   for (const poet of poets) {
     const poem = choosePoem(await fetchPoemsByAuthor(poet), year);
@@ -74,5 +84,5 @@ export async function GET(request: Request) {
     return Response.json(payload);
   }
 
-  return Response.json(createFallbackPoem(year));
+  return Response.json(createFallbackPoem(year, excludedAuthors));
 }

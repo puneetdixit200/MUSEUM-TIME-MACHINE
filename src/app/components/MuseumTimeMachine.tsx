@@ -41,6 +41,9 @@ const CENTURY_YEARS = Array.from(
   (_, index) => MIN_YEAR + index * 100 + 23,
 ).map(clampYear);
 
+const RECENT_POEM_AUTHORS_KEY = "museum-time-machine-recent-poem-authors";
+const MAX_RECENT_POEM_AUTHORS = 12;
+
 async function fetchJson<T>(url: string, signal: AbortSignal): Promise<T> {
   const response = await fetch(url, { signal });
   if (!response.ok) {
@@ -48,6 +51,16 @@ async function fetchJson<T>(url: string, signal: AbortSignal): Promise<T> {
   }
 
   return (await response.json()) as T;
+}
+
+function getPoemUrl(year: number, excludedAuthors: string[]): string {
+  const params = new URLSearchParams({ year: String(year) });
+
+  excludedAuthors.forEach((author) => {
+    params.append("excludeAuthor", author);
+  });
+
+  return `/api/poem?${params.toString()}`;
 }
 
 export function MuseumTimeMachine() {
@@ -68,10 +81,38 @@ export function MuseumTimeMachine() {
   const [readingLineIndex, setReadingLineIndex] = useState(-1);
 
   const artworkRef = useRef<ArtworkData | null>(null);
+  const recentPoemAuthorsRef = useRef<string[]>([]);
   const speechUtterancesRef = useRef<SpeechSynthesisUtterance[]>([]);
   const era = getEraForYear(year);
   const ageIntensity = getAgeIntensity(year);
   const events = getHistoricalEventsForYear(year);
+
+  const rememberPoemAuthor = useCallback((author: string) => {
+    const normalizedAuthor = author.trim();
+
+    if (!normalizedAuthor) {
+      return;
+    }
+
+    const nextAuthors = [
+      normalizedAuthor,
+      ...recentPoemAuthorsRef.current.filter(
+        (recentAuthor) =>
+          recentAuthor.trim().toLowerCase() !== normalizedAuthor.toLowerCase(),
+      ),
+    ].slice(0, MAX_RECENT_POEM_AUTHORS);
+
+    recentPoemAuthorsRef.current = nextAuthors;
+
+    try {
+      window.sessionStorage.setItem(
+        RECENT_POEM_AUTHORS_KEY,
+        JSON.stringify(nextAuthors),
+      );
+    } catch {
+      // Private browsing or strict storage policies should not block the museum.
+    }
+  }, []);
 
   const beginEraTransition = useCallback(() => {
     setIsTransitioning(true);
@@ -99,21 +140,39 @@ export function MuseumTimeMachine() {
   );
 
   useEffect(() => {
+    try {
+      const storedAuthors = JSON.parse(
+        window.sessionStorage.getItem(RECENT_POEM_AUTHORS_KEY) ?? "[]",
+      );
+
+      if (Array.isArray(storedAuthors)) {
+        recentPoemAuthorsRef.current = storedAuthors
+          .filter((author): author is string => typeof author === "string")
+          .slice(0, MAX_RECENT_POEM_AUTHORS);
+      }
+    } catch {
+      recentPoemAuthorsRef.current = [];
+    }
+  }, []);
+
+  useEffect(() => {
     const controller = new AbortController();
     const range = getCenturyRange(year);
+    const excludedAuthors = recentPoemAuthorsRef.current;
 
     Promise.all([
       fetchJson<ArtworkData>(
         `/api/artwork?year=${year}&yearStart=${range.start}&yearEnd=${range.end}`,
         controller.signal,
       ),
-      fetchJson<PoemData>(`/api/poem?year=${year}`, controller.signal),
+      fetchJson<PoemData>(getPoemUrl(year, excludedAuthors), controller.signal),
       fetchJson<AudioStation | null>(`/api/audio?year=${year}`, controller.signal),
     ])
       .then(([nextArtwork, nextPoem, nextStation]) => {
         artworkRef.current = nextArtwork;
         setArtwork(nextArtwork);
         setPoem(nextPoem);
+        rememberPoemAuthor(nextPoem.author);
         setStation(nextStation);
       })
       .catch((error: unknown) => {
@@ -130,7 +189,7 @@ export function MuseumTimeMachine() {
       });
 
     return () => controller.abort();
-  }, [year]);
+  }, [rememberPoemAuthor, year]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {

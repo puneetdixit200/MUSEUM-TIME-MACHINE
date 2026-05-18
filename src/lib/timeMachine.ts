@@ -1,4 +1,9 @@
-import { MAX_YEAR, MIN_YEAR, getCenturyRange } from "@/data/eraConfig";
+import {
+  MAX_YEAR,
+  MIN_YEAR,
+  getCenturyRange,
+  normalizeAuthorName,
+} from "@/data/eraConfig";
 
 export type ArtworkData = {
   id: string;
@@ -498,15 +503,28 @@ export function createFallbackArtwork(year: number): ArtworkData {
   };
 }
 
-export function createFallbackPoem(year: number): PoemData {
-  const choose = (poems: PoemData[]) => poems[(Math.abs(year) + 1) % poems.length];
+export function createFallbackPoem(
+  year: number,
+  excludedAuthors: string[] = [],
+): PoemData {
+  const choose = (poems: PoemData[]) => {
+    const excluded = new Set(
+      excludedAuthors.map(normalizeAuthorName).filter(Boolean),
+    );
+    const freshPoems = poems.filter(
+      (poem) => !excluded.has(normalizeAuthorName(poem.author)),
+    );
+    const candidates = freshPoems.length > 0 ? freshPoems : poems;
+
+    return candidates[(Math.abs(year) + 1) % candidates.length];
+  };
 
   if (year < 1400) {
     return choose(MEDIEVAL_FALLBACK_POEMS);
   }
 
   if (year < 1500) {
-    return FALLBACK_POEMS[1];
+    return choose([FALLBACK_POEMS[1], FALLBACK_POEMS[0]]);
   }
 
   if (year < 1600) {

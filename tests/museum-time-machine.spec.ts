@@ -20,6 +20,21 @@ test("serves period-appropriate poetry for the 1400s", async ({ request }) => {
   expect(poem.lines.length).toBeGreaterThan(5);
 });
 
+test("skips excluded poem authors when alternatives are available", async ({
+  request,
+}) => {
+  const response = await request.get(
+    "/api/poem?year=1603&excludeAuthor=Alexander%20Pope&excludeAuthor=William%20Shakespeare&excludeAuthor=John%20Donne",
+  );
+  expect(response.ok()).toBe(true);
+
+  const poem = (await response.json()) as { author: string; lines: string[] };
+  expect(["Alexander Pope", "William Shakespeare", "John Donne"]).not.toContain(
+    poem.author,
+  );
+  expect(poem.lines.length).toBeGreaterThan(5);
+});
+
 test("serves artwork near the selected year instead of an arbitrary century", async ({
   request,
 }) => {
@@ -112,6 +127,45 @@ test("supports navigation, history, detail mode, audio, and the art lens", async
 
   await page.getByRole("button", { name: "Play ambient audio" }).click();
   await expect(page.getByRole("button", { name: "Mute ambient audio" })).toBeVisible();
+});
+
+test("passes the visitor's recent poem author into the next era request", async ({
+  page,
+}) => {
+  const poemRequests: string[] = [];
+
+  page.on("request", (request) => {
+    const url = new URL(request.url());
+    if (url.pathname === "/api/poem") {
+      poemRequests.push(request.url());
+    }
+  });
+
+  await page.goto("/");
+  await expect
+    .poll(async () => page.locator(".poem-lines p").count())
+    .toBeGreaterThan(5);
+
+  const firstAuthor = (
+    await page.locator(".poem-heading p").nth(1).innerText()
+  ).trim();
+
+  await page.getByRole("button", { name: "Next Century" }).click();
+  await expect(page.getByRole("slider", { name: "Choose year" })).toHaveValue(
+    "1603",
+  );
+
+  await expect
+    .poll(() =>
+      poemRequests.some((requestUrl) => {
+        const url = new URL(requestUrl);
+        return (
+          url.searchParams.get("year") === "1603" &&
+          url.searchParams.getAll("excludeAuthor").includes(firstAuthor)
+        );
+      }),
+    )
+    .toBe(true);
 });
 
 test("stacks artwork preview above details on tablet portrait screens", async ({

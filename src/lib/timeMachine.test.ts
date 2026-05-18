@@ -75,6 +75,15 @@ describe("timeMachine helpers", () => {
     );
   });
 
+  it("uses a different fallback author when the recent author is excluded", () => {
+    expect(createFallbackPoem(1445, ["Geoffrey Chaucer"]).author).toBe(
+      "Anonymous",
+    );
+    expect(createFallbackPoem(1603, ["William Shakespeare"]).author).not.toBe(
+      "William Shakespeare",
+    );
+  });
+
   it("builds progressively wider artwork search windows from the chosen year", () => {
     expect(getArtworkSearchWindows(1445)[0]).toEqual({
       start: 1445,

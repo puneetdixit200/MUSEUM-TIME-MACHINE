@@ -103,7 +103,7 @@ export const ERAS: EraConfig[] = [
   },
 ];
 
-const CENTURY_POETS: Record<number, string[]> = {
+export const CENTURY_POETS: Record<number, string[]> = {
   1000: [],
   1100: [],
   1200: [],
@@ -191,7 +191,11 @@ export function getEraForYear(year: number): EraConfig {
   );
 }
 
-export function getPoetsForYear(year: number): string[] {
+export function normalizeAuthorName(author: string): string {
+  return author.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function getRotatedPoetsForYear(year: number): string[] {
   const { start } = getCenturyRange(year);
   const poets = CENTURY_POETS[start] ?? getEraForYear(year).poets;
   if (poets.length <= 1) {
@@ -200,6 +204,32 @@ export function getPoetsForYear(year: number): string[] {
 
   const offset = Math.abs(Math.round(year)) % poets.length;
   return [...poets.slice(offset), ...poets.slice(0, offset)];
+}
+
+export function getAvailablePoetsForYear(
+  year: number,
+  excludedAuthors: string[] = [],
+): string[] {
+  const poets = getRotatedPoetsForYear(year);
+  const excluded = new Set(
+    excludedAuthors.map(normalizeAuthorName).filter(Boolean),
+  );
+
+  if (excluded.size === 0) {
+    return poets;
+  }
+
+  return poets.filter((poet) => !excluded.has(normalizeAuthorName(poet)));
+}
+
+export function getPoetsForYear(
+  year: number,
+  excludedAuthors: string[] = [],
+): string[] {
+  const poets = getRotatedPoetsForYear(year);
+  const availablePoets = getAvailablePoetsForYear(year, excludedAuthors);
+
+  return availablePoets.length > 0 ? availablePoets : poets;
 }
 
 export function getHistoricalEventsForYear(year: number): string[] {

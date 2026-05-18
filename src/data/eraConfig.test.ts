@@ -49,6 +49,12 @@ describe("eraConfig", () => {
     expect(getPoetsForYear(1604)[0]).not.toBe(getPoetsForYear(1603)[0]);
   });
 
+  it("removes recently seen poets while fresh options exist", () => {
+    const firstChoice = getPoetsForYear(1603)[0];
+
+    expect(getPoetsForYear(1603, [firstChoice])).not.toContain(firstChoice);
+  });
+
   it("ages the page more heavily for older years", () => {
     expect(getAgeIntensity(1100)).toBeGreaterThan(getAgeIntensity(1700));
     expect(getAgeIntensity(1700)).toBeGreaterThan(getAgeIntensity(2000));
