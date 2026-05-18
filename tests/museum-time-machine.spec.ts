@@ -65,6 +65,9 @@ test("loads the museum time machine and renders an era", async ({ page }, testIn
   await expect(
     page.getByRole("link", { name: "Made with love by Puneet Dixit" }),
   ).toHaveAttribute("href", "https://github.com/puneetdixit200");
+  await expect(
+    page.getByRole("link", { name: "Made with love by Puneet Dixit" }),
+  ).toContainText("Made with love");
 
   if (testInfo.project.name === "mobile-chromium") {
     const creditBox = await page.locator(".artwork-credit").boundingBox();

@@ -305,7 +305,7 @@ export function MuseumTimeMachine() {
         aria-label="Made with love by Puneet Dixit"
         title="Open Puneet Dixit's GitHub"
       >
-        <span>Made with</span>
+        <span>Made with love</span>
         <Heart size={15} aria-hidden="true" />
         <span>by Puneet Dixit</span>
       </a>
