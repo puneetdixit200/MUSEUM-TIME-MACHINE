@@ -2,6 +2,7 @@ import { getAvailablePoetsForYear } from "@/data/eraConfig";
 import {
   type PoemData,
   createFallbackPoem,
+  getCuratedFallbackPoemsForYear,
   limitPoemLines,
 } from "@/lib/timeMachine";
 
@@ -64,6 +65,12 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const year = Number(searchParams.get("year")) || 1889;
   const excludedAuthors = getExcludedAuthors(searchParams);
+  const curatedEarlyPoems = getCuratedFallbackPoemsForYear(year);
+
+  if (curatedEarlyPoems.length > 0) {
+    return Response.json(createFallbackPoem(year, excludedAuthors));
+  }
+
   const poets = getAvailablePoetsForYear(year, excludedAuthors);
 
   for (const poet of poets) {

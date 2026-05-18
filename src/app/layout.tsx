@@ -44,6 +44,9 @@ export const metadata: Metadata = {
   title: "Museum Time Machine",
   description:
     "A full-screen art and poetry time portal powered by museum APIs.",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
 };
 
 export default function RootLayout({

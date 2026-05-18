@@ -6,6 +6,7 @@ import {
   createFallbackPoem,
   createWikimediaThumbnailUrl,
   getArtworkSearchWindows,
+  getCuratedFallbackPoetNamesForYear,
   limitPoemLines,
   normalizeAicImageUrl,
   timelinePercent,
@@ -65,7 +66,14 @@ describe("timeMachine helpers", () => {
   });
 
   it("rotates fallback poems instead of always returning Shakespeare", () => {
-    expect(createFallbackPoem(1445).author).toBe("Geoffrey Chaucer");
+    expect(getCuratedFallbackPoetNamesForYear(1445)).toEqual(
+      expect.arrayContaining([
+        "Charles d'Orleans",
+        "Christine de Pizan",
+        "Francois Villon",
+      ]),
+    );
+    expect(createFallbackPoem(1445).author).not.toBe("William Shakespeare");
     expect(createFallbackPoem(1503).author).not.toBe("William Shakespeare");
     expect(["William Blake", "John Keats"]).toContain(
       createFallbackPoem(1818).author,
@@ -76,11 +84,31 @@ describe("timeMachine helpers", () => {
   });
 
   it("uses a different fallback author when the recent author is excluded", () => {
-    expect(createFallbackPoem(1445, ["Geoffrey Chaucer"]).author).toBe(
-      "Anonymous",
+    const firstMedievalAuthor = createFallbackPoem(1445).author;
+
+    expect(createFallbackPoem(1445, [firstMedievalAuthor]).author).not.toBe(
+      firstMedievalAuthor,
     );
     expect(createFallbackPoem(1603, ["William Shakespeare"]).author).not.toBe(
       "William Shakespeare",
+    );
+  });
+
+  it("uses named curated poets across the 1000s through 1400s", () => {
+    expect(getCuratedFallbackPoetNamesForYear(1023)).toEqual(
+      expect.arrayContaining(["Anonymous Old English poet", "Omar Khayyam"]),
+    );
+    expect(getCuratedFallbackPoetNamesForYear(1123)).toEqual(
+      expect.arrayContaining(["Hildegard of Bingen", "Walther von der Vogelweide"]),
+    );
+    expect(getCuratedFallbackPoetNamesForYear(1223)).toEqual(
+      expect.arrayContaining(["Dante Alighieri", "Rumi"]),
+    );
+    expect(getCuratedFallbackPoetNamesForYear(1323)).toEqual(
+      expect.arrayContaining(["Francesco Petrarca", "Geoffrey Chaucer"]),
+    );
+    expect(getCuratedFallbackPoetNamesForYear(1423)).toEqual(
+      expect.arrayContaining(["Ausias March", "Francois Villon"]),
     );
   });
 

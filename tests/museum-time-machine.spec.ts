@@ -20,6 +20,57 @@ test("serves period-appropriate poetry for the 1400s", async ({ request }) => {
   expect(poem.lines.length).toBeGreaterThan(5);
 });
 
+test("serves named curated poets from the 1000s through 1400s", async ({
+  request,
+}) => {
+  const expectedAuthorsByYear = new Map([
+    [1023, ["Anonymous Old English poet", "Omar Khayyam", "Solomon ibn Gabirol"]],
+    [
+      1123,
+      [
+        "Hildegard of Bingen",
+        "Bernart de Ventadorn",
+        "Walther von der Vogelweide",
+        "Marie de France",
+      ],
+    ],
+    [1223, ["Rumi", "Dante Alighieri", "Saadi Shirazi", "Jacopone da Todi"]],
+    [
+      1323,
+      [
+        "Francesco Petrarca",
+        "Geoffrey Chaucer",
+        "William Langland",
+        "Anonymous Middle English poet",
+      ],
+    ],
+    [
+      1423,
+      [
+        "Charles d'Orleans",
+        "Christine de Pizan",
+        "Francois Villon",
+        "Ausias March",
+        "James I of Scotland",
+      ],
+    ],
+  ]);
+
+  for (const [year, expectedAuthors] of expectedAuthorsByYear) {
+    const response = await request.get(`/api/poem?year=${year}`);
+    expect(response.ok()).toBe(true);
+
+    const poem = (await response.json()) as {
+      author: string;
+      lines: string[];
+      source: string;
+    };
+    expect(expectedAuthors).toContain(poem.author);
+    expect(poem.source).toContain("Curated");
+    expect(poem.lines.length).toBeGreaterThan(5);
+  }
+});
+
 test("skips excluded poem authors when alternatives are available", async ({
   request,
 }) => {
@@ -83,6 +134,7 @@ test("loads the museum time machine and renders an era", async ({ page }, testIn
   await expect(
     page.getByRole("link", { name: "Made with love by Puneet Dixit" }),
   ).toContainText("Made with love");
+  await expect(page.locator('link[rel="icon"][href="/icon.svg"]')).toHaveCount(1);
 
   if (testInfo.project.name === "mobile-chromium") {
     const creditBox = await page.locator(".artwork-credit").boundingBox();

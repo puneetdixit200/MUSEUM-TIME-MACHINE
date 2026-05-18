@@ -328,7 +328,346 @@ export const FALLBACK_POEMS: PoemData[] = [
   },
 ];
 
-const MEDIEVAL_FALLBACK_POEMS = FALLBACK_POEMS.slice(0, 2);
+export const CURATED_EARLY_POEMS_BY_CENTURY: Record<number, PoemData[]> = {
+  1000: [
+    {
+      title: "The Wanderer",
+      author: "Anonymous Old English poet",
+      source: "Curated c. 10th-11th century",
+      lineCount: 10,
+      lines: [
+        "Oft must the lonely one await his favor,",
+        "The Maker's mercy, though heavy at heart",
+        "Over the waterways long he must stir",
+        "With hands grown cold upon the sea-road.",
+        "Fate is fully fixed.",
+        "So spoke the wanderer, mindful of hardships,",
+        "Of cruel slaughters and the fall of kin.",
+        "All this earth's kingdom becomes empty.",
+        "Here wealth is fleeting; here friends are fleeting;",
+        "Here man is fleeting; all this hall stands waste.",
+      ],
+    },
+    {
+      title: "Rubaiyat",
+      author: "Omar Khayyam",
+      source: "Curated c. 11th century",
+      lineCount: 8,
+      lines: [
+        "Awake! for morning in the bowl of night",
+        "Has flung the stone that puts the stars to flight.",
+        "Dreaming when dawn's left hand was in the sky,",
+        "I heard a voice within the tavern cry:",
+        "Come, fill the cup, and in the fire of spring",
+        "Your winter garment of repentance fling.",
+        "The bird of time has but a little way",
+        "To flutter, and the bird is on the wing.",
+      ],
+    },
+    {
+      title: "The Kingly Crown",
+      author: "Solomon ibn Gabirol",
+      source: "Curated c. 11th century",
+      lineCount: 8,
+      lines: [
+        "Thine are the heavens and the earth is thine;",
+        "Thou hast founded the world and its fullness.",
+        "Wisdom is a fountain hidden in thy light,",
+        "And understanding stands before thy throne.",
+        "The soul that seeks thee crosses inward seas,",
+        "Leaving the dust of narrow days behind.",
+        "In silence it remembers its first home,",
+        "And trembles at the gate of praise.",
+      ],
+    },
+  ],
+  1100: [
+    {
+      title: "O Strength of Eternity",
+      author: "Hildegard of Bingen",
+      source: "Curated c. 12th century",
+      lineCount: 8,
+      lines: [
+        "O strength of eternity, ordering all things,",
+        "In your heart all creatures are held.",
+        "By your word they are clothed in beauty,",
+        "By your breath the fields grow green.",
+        "You gather the scattered into harmony,",
+        "You bind the wounds of time with light.",
+        "Let the living song rise upward,",
+        "A flame returning to its source.",
+      ],
+    },
+    {
+      title: "Can vei la lauzeta mover",
+      author: "Bernart de Ventadorn",
+      source: "Curated c. 12th century",
+      lineCount: 8,
+      lines: [
+        "When I see the lark move",
+        "For joy against the sunbeam,",
+        "Then forget herself and fall",
+        "For sweetness that enters the heart,",
+        "Such envy takes me of all I see",
+        "That I marvel my heart does not melt.",
+        "Love has taken me beyond counsel,",
+        "And left me only song.",
+      ],
+    },
+    {
+      title: "Under der linden",
+      author: "Walther von der Vogelweide",
+      source: "Curated c. 12th century",
+      lineCount: 8,
+      lines: [
+        "Under the linden on the heath,",
+        "Where our two beds were made,",
+        "There you may find, gently broken,",
+        "Flowers and grass together laid.",
+        "Before the wood, in a valley,",
+        "Tandaradei sang the nightingale.",
+        "No one knows where he lay with me,",
+        "Save the little bird in the dale.",
+      ],
+    },
+    {
+      title: "Lanval",
+      author: "Marie de France",
+      source: "Curated c. 12th century",
+      lineCount: 8,
+      lines: [
+        "I shall tell you of another lay,",
+        "As the Bretons shaped it long ago.",
+        "A knight was far from praise at court,",
+        "Forgotten where bright favors flow.",
+        "Then through the meadow came a maid,",
+        "More radiant than the summer noon;",
+        "She led him where the silk tents shone,",
+        "And changed his exile into boon.",
+      ],
+    },
+  ],
+  1200: [
+    {
+      title: "The Reed Song",
+      author: "Rumi",
+      source: "Curated c. 13th century",
+      lineCount: 8,
+      lines: [
+        "Listen to the reed, how it tells a tale,",
+        "Complaining of separations.",
+        "Since they cut me from the reed-bed,",
+        "My cry has made men and women weep.",
+        "I seek a heart torn open by parting,",
+        "That I may unfold the pain of longing.",
+        "Whoever is far from the source",
+        "Desires the time of union again.",
+      ],
+    },
+    {
+      title: "Inferno, Canto I",
+      author: "Dante Alighieri",
+      source: "Curated c. 1308-1321",
+      lineCount: 9,
+      lines: [
+        "Midway upon the journey of our life",
+        "I found myself within a forest dark,",
+        "For the straight pathway had been lost.",
+        "Ah me, how hard a thing it is to say",
+        "What was this forest savage, rough, and stern,",
+        "Which in the very thought renews the fear.",
+        "So bitter is it, death is little more;",
+        "But to retell the good discovered there,",
+        "I speak of other things I saw.",
+      ],
+    },
+    {
+      title: "The Rose Garden",
+      author: "Saadi Shirazi",
+      source: "Curated c. 1258",
+      lineCount: 8,
+      lines: [
+        "The children of Adam are limbs of one body,",
+        "Created from one precious essence.",
+        "When time brings pain to a single limb,",
+        "The other limbs cannot remain at rest.",
+        "If you feel no grief for another's trouble,",
+        "You are not worthy to be called by that name.",
+        "A garden is kept by tenderness,",
+        "And speech is fragrant when mercy blooms.",
+      ],
+    },
+    {
+      title: "Stabat Mater",
+      author: "Jacopone da Todi",
+      source: "Curated c. 13th century",
+      lineCount: 8,
+      lines: [
+        "At the cross her station keeping,",
+        "Stood the mournful mother weeping,",
+        "Close to Jesus to the last.",
+        "Through her soul, of joy bereaved,",
+        "Bowed with anguish, deeply grieved,",
+        "Now at length the sword had passed.",
+        "O how sad and sore distressed",
+        "Was that mother highly blessed.",
+      ],
+    },
+  ],
+  1300: [
+    {
+      title: "Canzoniere I",
+      author: "Francesco Petrarca",
+      source: "Curated c. 14th century",
+      lineCount: 8,
+      lines: [
+        "You who hear in scattered rhymes the sound",
+        "Of sighs on which I fed my heart in youth,",
+        "When I was partly other than I am,",
+        "For all the varied style in which I weep,",
+        "Between vain hope and vain sorrow,",
+        "May I find pity, not only pardon.",
+        "I see clearly now how I became",
+        "A tale long spoken among the people.",
+      ],
+    },
+    {
+      title: "The Canterbury Tales: General Prologue",
+      author: "Geoffrey Chaucer",
+      source: "Curated c. 1387-1400",
+      lineCount: 12,
+      lines: [
+        "Whan that Aprill with his shoures soote,",
+        "The droghte of March hath perced to the roote,",
+        "And bathed every veyne in swich licour,",
+        "Of which vertu engendred is the flour;",
+        "Whan Zephirus eek with his sweete breeth",
+        "Inspired hath in every holt and heeth",
+        "The tendre croppes, and the yonge sonne",
+        "Hath in the Ram his half cours yronne,",
+        "And smale foweles maken melodye,",
+        "That slepen al the nyght with open ye,",
+        "So priketh hem Nature in hir corages,",
+        "Thanne longen folk to goon on pilgrimages.",
+      ],
+    },
+    {
+      title: "Piers Plowman",
+      author: "William Langland",
+      source: "Curated c. 1370-1390",
+      lineCount: 8,
+      lines: [
+        "In a summer season, when soft was the sun,",
+        "I clothed myself in rough cloth as I were a shepherd.",
+        "In habit like a hermit, unholy of works,",
+        "I went wide in this world, wonders to hear.",
+        "On a May morning on Malvern hills",
+        "A marvel befell me, of fairy it seemed;",
+        "I was weary with wandering and went to rest",
+        "Under a broad bank by a brook's side.",
+      ],
+    },
+    {
+      title: "I Have a Noble Cock",
+      author: "Anonymous Middle English poet",
+      source: "Curated c. 14th century",
+      lineCount: 8,
+      lines: [
+        "I have a noble cock,",
+        "Croweth before the day;",
+        "He makes me rise early",
+        "My prayers for to say.",
+        "I have a gentle bird",
+        "Sings in the greenwood tree;",
+        "He calls the light from darkness",
+        "And morning back to me.",
+      ],
+    },
+  ],
+  1400: [
+    {
+      title: "Le temps a laisse son manteau",
+      author: "Charles d'Orleans",
+      source: "Curated c. 15th century",
+      lineCount: 8,
+      lines: [
+        "The season has cast off its cloak",
+        "Of wind and cold and rain,",
+        "And put on embroidery",
+        "Of shining sunlight again.",
+        "There is no bird or beast",
+        "That does not sing or cry:",
+        "The season has cast off its cloak,",
+        "And blue is all the sky.",
+      ],
+    },
+    {
+      title: "The Book of the City of Ladies",
+      author: "Christine de Pizan",
+      source: "Curated c. 1405",
+      lineCount: 8,
+      lines: [
+        "I sat one day in my study enclosed,",
+        "Surrounded by books of many kinds.",
+        "My mind was weary from long reading,",
+        "And strange opinions troubled my heart.",
+        "Then reason came to me like a clear light,",
+        "Justice and rectitude standing beside her.",
+        "They bade me raise a city in words,",
+        "Where noble women might safely dwell.",
+      ],
+    },
+    {
+      title: "Ballade of the Hanged",
+      author: "Francois Villon",
+      source: "Curated c. 1462",
+      lineCount: 8,
+      lines: [
+        "Human brothers who live after us,",
+        "Do not harden your hearts against us.",
+        "If you have pity on our poor bodies,",
+        "God will sooner have mercy on you.",
+        "Here we are five or six, all hanging;",
+        "Our flesh, once fed too well, is eaten.",
+        "Bones and ashes, we become dust:",
+        "Pray God that all may be absolved.",
+      ],
+    },
+    {
+      title: "Veles e vents",
+      author: "Ausias March",
+      source: "Curated c. 15th century",
+      lineCount: 8,
+      lines: [
+        "Winds and seas shall carry out my will,",
+        "Making doubtful paths across the water.",
+        "The mistral and west wind will resist them,",
+        "And their allies will rise against the storm.",
+        "My heart goes where no harbor is promised,",
+        "Driven by love through contrary weather.",
+        "If I reach land, I shall still remember",
+        "The sea that tested every sail.",
+      ],
+    },
+    {
+      title: "The King's Quair",
+      author: "James I of Scotland",
+      source: "Curated c. 1424",
+      lineCount: 8,
+      lines: [
+        "Bewailing in my chamber thus alone,",
+        "Despaired of all joy and remedy,",
+        "I heard the bell ring toward the morn,",
+        "And rose to look upon the world outside.",
+        "The garden shone below the prison wall,",
+        "Fresh with leaves and songs of birds;",
+        "There first my heart beheld its star,",
+        "And captivity became a court of love.",
+      ],
+    },
+  ],
+};
+
 const RENAISSANCE_FALLBACK_POEMS = FALLBACK_POEMS.slice(1, 4);
 const BAROQUE_FALLBACK_POEMS = FALLBACK_POEMS.slice(3, 6);
 const ROMANTIC_FALLBACK_POEMS = FALLBACK_POEMS.slice(6, 8);
@@ -503,6 +842,15 @@ export function createFallbackArtwork(year: number): ArtworkData {
   };
 }
 
+export function getCuratedFallbackPoemsForYear(year: number): PoemData[] {
+  const { start } = getCenturyRange(year);
+  return CURATED_EARLY_POEMS_BY_CENTURY[start] ?? [];
+}
+
+export function getCuratedFallbackPoetNamesForYear(year: number): string[] {
+  return getCuratedFallbackPoemsForYear(year).map((poem) => poem.author);
+}
+
 export function createFallbackPoem(
   year: number,
   excludedAuthors: string[] = [],
@@ -519,12 +867,9 @@ export function createFallbackPoem(
     return candidates[(Math.abs(year) + 1) % candidates.length];
   };
 
-  if (year < 1400) {
-    return choose(MEDIEVAL_FALLBACK_POEMS);
-  }
-
-  if (year < 1500) {
-    return choose([FALLBACK_POEMS[1], FALLBACK_POEMS[0]]);
+  const earlyPoems = getCuratedFallbackPoemsForYear(year);
+  if (earlyPoems.length > 0) {
+    return choose(earlyPoems);
   }
 
   if (year < 1600) {
