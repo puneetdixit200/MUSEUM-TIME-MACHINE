@@ -42,7 +42,7 @@ const CENTURY_YEARS = Array.from(
 ).map(clampYear);
 
 const RECENT_POEM_AUTHORS_KEY = "museum-time-machine-recent-poem-authors";
-const MAX_RECENT_POEM_AUTHORS = 12;
+const MAX_RECENT_POEM_AUTHORS = 32;
 
 async function fetchJson<T>(url: string, signal: AbortSignal): Promise<T> {
   const response = await fetch(url, { signal });
