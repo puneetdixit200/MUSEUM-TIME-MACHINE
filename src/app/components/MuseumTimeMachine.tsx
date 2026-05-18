@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { GitBranch, Search } from "lucide-react";
 import {
   type CSSProperties,
   type PointerEvent,
@@ -295,6 +295,17 @@ export function MuseumTimeMachine() {
           onToggle={() => setIsAudioEnabled((current) => !current)}
         />
       </div>
+      <a
+        className="github-link"
+        href="https://github.com/puneetdixit200"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="GitHub puneetdixit200"
+        title="GitHub puneetdixit200"
+      >
+        <GitBranch size={17} />
+        <span>@puneetdixit200</span>
+      </a>
       {isTransitioning ? (
         <div className="loading-rune" aria-label="Loading era">
           <Search size={20} />

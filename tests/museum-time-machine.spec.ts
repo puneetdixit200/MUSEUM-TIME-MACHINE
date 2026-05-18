@@ -31,6 +31,10 @@ test("loads the museum time machine and renders an era", async ({ page }, testIn
     "transform",
     "none",
   );
+  await expect(page.getByRole("link", { name: "GitHub puneetdixit200" })).toHaveAttribute(
+    "href",
+    "https://github.com/puneetdixit200",
+  );
 
   await page.screenshot({
     path: `test-results/museum-time-machine-${testInfo.project.name}.png`,

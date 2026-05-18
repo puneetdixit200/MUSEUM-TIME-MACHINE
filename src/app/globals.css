@@ -454,6 +454,38 @@ button {
   white-space: nowrap;
 }
 
+.github-link {
+  position: absolute;
+  right: clamp(1rem, 2vw, 2rem);
+  bottom: clamp(4.7rem, 9vh, 6rem);
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.35rem;
+  padding: 0 0.82rem;
+  border: 1px solid rgba(255, 248, 235, 0.14);
+  border-radius: 999px;
+  background: rgba(10, 10, 12, 0.38);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28);
+  color: rgba(255, 248, 235, 0.82);
+  font-size: 0.75rem;
+  text-decoration: none;
+  backdrop-filter: blur(14px);
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.github-link:hover {
+  border-color: color-mix(in srgb, var(--era-accent), white 12%);
+  background: rgba(255, 248, 235, 0.11);
+  color: #fff8eb;
+  transform: translateY(-1px);
+}
+
 .history-panel {
   position: absolute;
   top: 50%;
@@ -804,6 +836,19 @@ button {
   }
 
   .audio-control span {
+    display: none;
+  }
+
+  .github-link {
+    right: 0.8rem;
+    bottom: 1rem;
+    width: 2.65rem;
+    height: 2.65rem;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .github-link span {
     display: none;
   }
 
