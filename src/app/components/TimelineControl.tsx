@@ -36,7 +36,7 @@ export function TimelineControl({
   return (
     <div className="timeline-wrap">
       <button
-        className="control-button"
+        className="control-button timeline-prev"
         type="button"
         onClick={() => onStepCentury(-1)}
         disabled={year <= MIN_YEAR}
@@ -77,27 +77,29 @@ export function TimelineControl({
           </div>
         </div>
       </div>
-      <button
-        className="control-button"
-        type="button"
-        onClick={() => onStepCentury(1)}
-        disabled={year >= MAX_YEAR}
-        aria-label="Next Century"
-      >
-        <span>Next Century</span>
-        <ChevronRight size={18} />
-      </button>
-      <button
-        className={`icon-button auto-button ${isAutoWalking ? "is-active" : ""}`}
-        type="button"
-        onClick={onToggleAutoWalk}
-        aria-label={
-          isAutoWalking ? "Stop random walk through time" : "Start random walk"
-        }
-        title={isAutoWalking ? "Stop random walk" : "Random walk through time"}
-      >
-        <Shuffle size={18} />
-      </button>
+      <div className="timeline-actions">
+        <button
+          className="control-button timeline-next"
+          type="button"
+          onClick={() => onStepCentury(1)}
+          disabled={year >= MAX_YEAR}
+          aria-label="Next Century"
+        >
+          <span>Next Century</span>
+          <ChevronRight size={18} />
+        </button>
+        <button
+          className={`icon-button auto-button ${isAutoWalking ? "is-active" : ""}`}
+          type="button"
+          onClick={onToggleAutoWalk}
+          aria-label={
+            isAutoWalking ? "Stop random walk through time" : "Start random walk"
+          }
+          title={isAutoWalking ? "Stop random walk" : "Random walk through time"}
+        >
+          <Shuffle size={18} />
+        </button>
+      </div>
     </div>
   );
 }
