@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  artworkDateOverlapsRange,
   clampYear,
   createFallbackArtwork,
   createFallbackPoem,
+  getArtworkSearchWindows,
   limitPoemLines,
   normalizeAicImageUrl,
   timelinePercent,
@@ -47,9 +49,40 @@ describe("timeMachine helpers", () => {
   });
 
   it("rotates fallback poems instead of always returning Shakespeare", () => {
+    expect(createFallbackPoem(1445).author).toBe("Geoffrey Chaucer");
     expect(createFallbackPoem(1503).author).not.toBe("William Shakespeare");
+    expect(["William Blake", "John Keats"]).toContain(
+      createFallbackPoem(1818).author,
+    );
     expect(createFallbackPoem(1604).author).not.toBe(
       createFallbackPoem(1603).author,
+    );
+  });
+
+  it("builds progressively wider artwork search windows from the chosen year", () => {
+    expect(getArtworkSearchWindows(1445)[0]).toEqual({
+      start: 1445,
+      end: 1445,
+    });
+    expect(getArtworkSearchWindows(1445)).toContainEqual({
+      start: 1430,
+      end: 1460,
+    });
+    expect(getArtworkSearchWindows(1445)).not.toContainEqual({
+      start: 1400,
+      end: 1499,
+    });
+  });
+
+  it("checks artwork display dates against the active search window", () => {
+    expect(artworkDateOverlapsRange("ca. 1465-70", 1465, 1445, 1445)).toBe(
+      false,
+    );
+    expect(artworkDateOverlapsRange("ca. 1465-70", 1465, 1460, 1475)).toBe(
+      true,
+    );
+    expect(artworkDateOverlapsRange("c. 1503-1519", 1503, 1503, 1503)).toBe(
+      true,
     );
   });
 });

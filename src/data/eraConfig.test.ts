@@ -29,6 +29,10 @@ describe("eraConfig", () => {
   });
 
   it("uses known poets whose work is available through PoetryDB", () => {
+    expect(getPoetsForYear(1445)).toContain("Geoffrey Chaucer");
+    expect(getPoetsForYear(1445)).not.toEqual(
+      expect.arrayContaining(["William Shakespeare", "John Milton"]),
+    );
     expect(getPoetsForYear(1603)).toContain("William Shakespeare");
     expect(getPoetsForYear(1818)).toEqual(
       expect.arrayContaining(["John Keats", "Percy Bysshe Shelley"]),

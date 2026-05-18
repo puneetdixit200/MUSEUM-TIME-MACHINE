@@ -104,7 +104,7 @@ export function MuseumTimeMachine() {
 
     Promise.all([
       fetchJson<ArtworkData>(
-        `/api/artwork?yearStart=${range.start}&yearEnd=${range.end}`,
+        `/api/artwork?year=${year}&yearStart=${range.start}&yearEnd=${range.end}`,
         controller.signal,
       ),
       fetchJson<PoemData>(`/api/poem?year=${year}`, controller.signal),

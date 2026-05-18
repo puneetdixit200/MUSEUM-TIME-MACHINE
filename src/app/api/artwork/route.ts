@@ -1,8 +1,12 @@
 import { getCenturyRange } from "@/data/eraConfig";
 import {
+  artworkDateOverlapsRange,
+  clampYear,
   type ArtworkData,
   createFallbackArtwork,
+  getArtworkSearchWindows,
   normalizeAicImageUrl,
+  type YearRange,
 } from "@/lib/timeMachine";
 
 export const dynamic = "force-dynamic";
@@ -121,6 +125,16 @@ async function fetchMetArtwork(
     if (!object || !imageUrl) {
       continue;
     }
+    if (
+      !artworkDateOverlapsRange(
+        object.objectDate,
+        object.objectBeginDate,
+        yearStart,
+        yearEnd,
+      )
+    ) {
+      continue;
+    }
 
     return {
       id: `met-${object.objectID}`,
@@ -168,7 +182,16 @@ async function fetchAicArtwork(
   url.searchParams.set("limit", "24");
 
   const data = await fetchJson<AicResponse>(url.toString());
-  const artworks = (data?.data ?? []).filter((artwork) => artwork.image_id);
+  const artworks = (data?.data ?? []).filter(
+    (artwork) =>
+      artwork.image_id &&
+      artworkDateOverlapsRange(
+        artwork.date_display,
+        artwork.date_start,
+        yearStart,
+        yearEnd,
+      ),
+  );
   if (artworks.length === 0) {
     return null;
   }
@@ -209,7 +232,14 @@ async function fetchHarvardArtwork(
 
   const data = await fetchJson<HarvardResponse>(url.toString());
   const artworks = (data?.records ?? []).filter(
-    (artwork) => artwork.images?.[0]?.baseimageurl,
+    (artwork) =>
+      artwork.images?.[0]?.baseimageurl &&
+      artworkDateOverlapsRange(
+        artwork.dated,
+        artwork.yearmade,
+        yearStart,
+        yearEnd,
+      ),
   );
   if (artworks.length === 0) {
     return null;
@@ -236,15 +266,32 @@ async function fetchHarvardArtwork(
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const fallbackRange = getCenturyRange(1889);
+  const requestedYearParam = searchParams.get("year");
+  const requestedYear = Number(requestedYearParam);
+  const hasRequestedYear =
+    requestedYearParam !== null && Number.isFinite(requestedYear);
   const yearStart = Number(searchParams.get("yearStart")) || fallbackRange.start;
   const yearEnd = Number(searchParams.get("yearEnd")) || fallbackRange.end;
-  const fallbackArtwork = createFallbackArtwork(yearStart);
+  const targetYear = hasRequestedYear ? clampYear(requestedYear) : yearStart;
+  const searchWindows: YearRange[] = hasRequestedYear
+    ? getArtworkSearchWindows(targetYear)
+    : [{ start: yearStart, end: yearEnd }];
+  const fallbackArtwork = createFallbackArtwork(targetYear);
 
-  const artwork =
-    (await fetchMetArtwork(yearStart, yearEnd)) ??
-    (await fetchAicArtwork(yearStart, yearEnd)) ??
-    (await fetchHarvardArtwork(yearStart, yearEnd)) ??
-    fallbackArtwork;
+  let artwork: ArtworkData | null = null;
+
+  for (const range of searchWindows) {
+    artwork =
+      (await fetchMetArtwork(range.start, range.end)) ??
+      (await fetchAicArtwork(range.start, range.end)) ??
+      (await fetchHarvardArtwork(range.start, range.end));
+
+    if (artwork) {
+      break;
+    }
+  }
+
+  artwork ??= fallbackArtwork;
 
   return Response.json(artwork);
 }

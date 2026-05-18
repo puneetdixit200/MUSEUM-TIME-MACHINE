@@ -40,7 +40,7 @@ export const ERAS: EraConfig[] = [
     parchmentColor: "rgba(235, 202, 144, 0.14)",
     fontVar: "var(--font-playfair)",
     cursor: "crosshair",
-    poets: ["William Shakespeare", "John Milton"],
+    poets: ["Geoffrey Chaucer"],
     audioTags: ["medieval", "early music", "chant"],
   },
   {
@@ -53,7 +53,7 @@ export const ERAS: EraConfig[] = [
     parchmentColor: "rgba(255, 235, 188, 0.12)",
     fontVar: "var(--font-playfair)",
     cursor: "cell",
-    poets: ["William Shakespeare", "John Milton"],
+    poets: ["Sir Thomas Wyatt", "Edmund Spenser", "William Shakespeare"],
     audioTags: ["renaissance", "classical"],
   },
   {
@@ -66,7 +66,7 @@ export const ERAS: EraConfig[] = [
     parchmentColor: "rgba(230, 214, 168, 0.11)",
     fontVar: "var(--font-garamond)",
     cursor: "zoom-in",
-    poets: ["William Shakespeare", "John Milton", "Alexander Pope"],
+    poets: ["William Shakespeare", "John Donne", "John Milton", "Alexander Pope"],
     audioTags: ["baroque", "classical"],
   },
   {
@@ -104,13 +104,13 @@ export const ERAS: EraConfig[] = [
 ];
 
 const CENTURY_POETS: Record<number, string[]> = {
-  1000: ["William Shakespeare", "John Milton"],
-  1100: ["William Shakespeare", "John Milton"],
-  1200: ["William Shakespeare", "John Milton"],
-  1300: ["William Shakespeare", "John Milton"],
-  1400: ["William Shakespeare", "John Milton"],
-  1500: ["William Shakespeare", "John Milton"],
-  1600: ["William Shakespeare", "John Milton", "Alexander Pope"],
+  1000: [],
+  1100: [],
+  1200: [],
+  1300: ["Geoffrey Chaucer"],
+  1400: ["Geoffrey Chaucer"],
+  1500: ["Sir Thomas Wyatt", "Edmund Spenser", "William Shakespeare"],
+  1600: ["William Shakespeare", "John Donne", "John Milton", "Alexander Pope"],
   1700: ["Alexander Pope", "William Blake"],
   1800: [
     "William Blake",

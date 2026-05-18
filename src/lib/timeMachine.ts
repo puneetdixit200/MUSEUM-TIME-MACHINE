@@ -30,7 +30,25 @@ export type AudioStation = {
   homepage?: string;
 };
 
+export type YearRange = {
+  start: number;
+  end: number;
+};
+
 const FALLBACK_ARTWORKS: ArtworkData[] = [
+  {
+    id: "fallback-early-renaissance",
+    title: "The Arnolfini Portrait",
+    artist: "Jan van Eyck",
+    date: "1434",
+    year: 1434,
+    medium: "Oil on oak panel",
+    department: "Painting",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/3/33/Van_Eyck_-_Arnolfini_Portrait.jpg",
+    source: "Curated fallback",
+    repository: "National Gallery, London",
+  },
   {
     id: "fallback-renaissance",
     title: "Mona Lisa",
@@ -100,6 +118,68 @@ const FALLBACK_ARTWORKS: ArtworkData[] = [
 
 export const FALLBACK_POEMS: PoemData[] = [
   {
+    title: "Sumer Is Icumen In",
+    author: "Anonymous",
+    source: "Curated c. 1260",
+    lineCount: 12,
+    lines: [
+      "Sumer is icumen in,",
+      "Lhude sing cuccu!",
+      "Groweth sed and bloweth med,",
+      "And springth the wde nu;",
+      "Sing cuccu!",
+      "Awe bleteth after lomb,",
+      "Lhouth after calve cu;",
+      "Bulluc sterteth, bucke verteth,",
+      "Murie sing cuccu!",
+      "Cuccu, cuccu,",
+      "Wel singes thu, cuccu;",
+      "Ne swik thu naver nu.",
+    ],
+  },
+  {
+    title: "The Canterbury Tales: General Prologue",
+    author: "Geoffrey Chaucer",
+    source: "Curated c. 1387-1400",
+    lineCount: 12,
+    lines: [
+      "Whan that Aprill with his shoures soote,",
+      "The droghte of March hath perced to the roote,",
+      "And bathed every veyne in swich licour,",
+      "Of which vertu engendred is the flour;",
+      "Whan Zephirus eek with his sweete breeth",
+      "Inspired hath in every holt and heeth",
+      "The tendre croppes, and the yonge sonne",
+      "Hath in the Ram his half cours yronne,",
+      "And smale foweles maken melodye,",
+      "That slepen al the nyght with open ye,",
+      "So priketh hem Nature in hir corages,",
+      "Thanne longen folk to goon on pilgrimages.",
+    ],
+  },
+  {
+    title: "I Find No Peace",
+    author: "Sir Thomas Wyatt",
+    source: "Curated c. 1530s",
+    lineCount: 14,
+    lines: [
+      "I find no peace, and all my war is done.",
+      "I fear and hope. I burn and freeze like ice.",
+      "I fly above the wind, yet can I not arise;",
+      "And nought I have, and all the world I season.",
+      "That loseth nor locketh holdeth me in prison",
+      "And holdeth me not, yet can I scape no wise,",
+      "Nor letteth me live nor die at my device,",
+      "And yet of death it giveth me occasion.",
+      "Without eyen I see, and without tongue I plain.",
+      "I desire to perish, and yet I ask health.",
+      "I love another, and thus I hate myself.",
+      "I feed me in sorrow and laugh in all my pain;",
+      "Likewise displeaseth me both life and death,",
+      "And my delight is causer of this strife.",
+    ],
+  },
+  {
     title: "Sonnet 18",
     author: "William Shakespeare",
     source: "Curated fallback",
@@ -162,6 +242,48 @@ export const FALLBACK_POEMS: PoemData[] = [
     ],
   },
   {
+    title: "The Tyger",
+    author: "William Blake",
+    source: "Curated 1794",
+    lineCount: 12,
+    lines: [
+      "Tyger Tyger, burning bright,",
+      "In the forests of the night;",
+      "What immortal hand or eye,",
+      "Could frame thy fearful symmetry?",
+      "In what distant deeps or skies",
+      "Burnt the fire of thine eyes?",
+      "On what wings dare he aspire?",
+      "What the hand, dare seize the fire?",
+      "And what shoulder, and what art,",
+      "Could twist the sinews of thy heart?",
+      "And when thy heart began to beat,",
+      "What dread hand? and what dread feet?",
+    ],
+  },
+  {
+    title: "Bright Star",
+    author: "John Keats",
+    source: "Curated c. 1819",
+    lineCount: 14,
+    lines: [
+      "Bright star, would I were stedfast as thou art--",
+      "Not in lone splendour hung aloft the night,",
+      "And watching, with eternal lids apart,",
+      "Like nature's patient, sleepless Eremite,",
+      "The moving waters at their priestlike task",
+      "Of pure ablution round earth's human shores,",
+      "Or gazing on the new soft-fallen mask",
+      "Of snow upon the mountains and the moors--",
+      "No--yet still stedfast, still unchangeable,",
+      "Pillow'd upon my fair love's ripening breast,",
+      "To feel for ever its soft fall and swell,",
+      "Awake for ever in a sweet unrest,",
+      "Still, still to hear her tender-taken breath,",
+      "And so live ever--or else swoon to death.",
+    ],
+  },
+  {
     title: "Aedh Wishes for the Cloths of Heaven",
     author: "W. B. Yeats",
     source: "Curated fallback",
@@ -199,9 +321,11 @@ export const FALLBACK_POEMS: PoemData[] = [
   },
 ];
 
-const EARLY_FALLBACK_POEMS = FALLBACK_POEMS.slice(0, 3);
-const ROMANTIC_FALLBACK_POEMS = FALLBACK_POEMS.slice(2, 4);
-const MODERN_FALLBACK_POEMS = FALLBACK_POEMS.slice(3);
+const MEDIEVAL_FALLBACK_POEMS = FALLBACK_POEMS.slice(0, 2);
+const RENAISSANCE_FALLBACK_POEMS = FALLBACK_POEMS.slice(1, 4);
+const BAROQUE_FALLBACK_POEMS = FALLBACK_POEMS.slice(3, 6);
+const ROMANTIC_FALLBACK_POEMS = FALLBACK_POEMS.slice(6, 8);
+const MODERN_FALLBACK_POEMS = FALLBACK_POEMS.slice(8);
 
 export function clampYear(year: number): number {
   return Math.min(MAX_YEAR, Math.max(MIN_YEAR, Math.round(year)));
@@ -226,14 +350,117 @@ export function limitPoemLines(lines: string[], maxLines = 18): string[] {
   return lines.map((line) => line.trim()).filter(Boolean).slice(0, maxLines);
 }
 
+function addUniqueRange(ranges: YearRange[], start: number, end: number) {
+  const range = {
+    start: clampYear(Math.min(start, end)),
+    end: clampYear(Math.max(start, end)),
+  };
+
+  if (
+    ranges.some(
+      (existing) => existing.start === range.start && existing.end === range.end,
+    )
+  ) {
+    return;
+  }
+
+  ranges.push(range);
+}
+
+export function getArtworkSearchWindows(year: number): YearRange[] {
+  const targetYear = clampYear(year);
+  const ranges: YearRange[] = [];
+
+  addUniqueRange(ranges, targetYear, targetYear);
+  addUniqueRange(ranges, targetYear - 5, targetYear + 5);
+  addUniqueRange(ranges, targetYear - 15, targetYear + 15);
+
+  return ranges;
+}
+
+function expandShortRangeEnd(startYear: number, endText: string): number {
+  if (endText.length >= String(startYear).length) {
+    return Number(endText);
+  }
+
+  const scale = 10 ** endText.length;
+  const prefix = Math.floor(startYear / scale) * scale;
+  let endYear = prefix + Number(endText);
+
+  if (endYear < startYear) {
+    endYear += scale;
+  }
+
+  return endYear;
+}
+
+function parseArtworkDateRange(date: string): YearRange | null {
+  const normalized = date.replace(/[–—]/g, "-");
+  const ranges: YearRange[] = [];
+  const rangePattern = /(\d{3,4})\s*-\s*(\d{1,4})/g;
+  let rangeMatch: RegExpExecArray | null;
+
+  while ((rangeMatch = rangePattern.exec(normalized))) {
+    const startYear = Number(rangeMatch[1]);
+    const endYear = expandShortRangeEnd(startYear, rangeMatch[2]);
+    ranges.push({
+      start: Math.min(startYear, endYear),
+      end: Math.max(startYear, endYear),
+    });
+  }
+
+  const yearPattern = /(?:^|[^\d])(\d{3,4})(?=$|[^\d])/g;
+  let yearMatch: RegExpExecArray | null;
+
+  while ((yearMatch = yearPattern.exec(normalized))) {
+    const year = Number(yearMatch[1]);
+    ranges.push({ start: year, end: year });
+  }
+
+  if (ranges.length === 0) {
+    return null;
+  }
+
+  return {
+    start: Math.min(...ranges.map((range) => range.start)),
+    end: Math.max(...ranges.map((range) => range.end)),
+  };
+}
+
+export function artworkDateOverlapsRange(
+  date: string | undefined,
+  fallbackYear: number | undefined,
+  rangeStart: number,
+  rangeEnd: number,
+): boolean {
+  const parsedRange = date ? parseArtworkDateRange(date) : null;
+  const artworkRange =
+    parsedRange ??
+    (fallbackYear
+      ? {
+          start: fallbackYear,
+          end: fallbackYear,
+        }
+      : null);
+
+  if (!artworkRange) {
+    return true;
+  }
+
+  return artworkRange.start <= rangeEnd && artworkRange.end >= rangeStart;
+}
+
 export function createFallbackArtwork(year: number): ArtworkData {
   const { start } = getCenturyRange(year);
-  const match =
-    FALLBACK_ARTWORKS.find(
-      (artwork) => artwork.year >= start && artwork.year <= start + 99,
-    ) ??
-    FALLBACK_ARTWORKS.find((artwork) => Math.abs(artwork.year - year) < 100) ??
-    FALLBACK_ARTWORKS[2];
+  const sameCentury = FALLBACK_ARTWORKS.filter(
+    (artwork) => artwork.year >= start && artwork.year <= start + 99,
+  );
+  const candidates = sameCentury.length > 0 ? sameCentury : FALLBACK_ARTWORKS;
+  const match = candidates.reduce((closest, artwork) =>
+    Math.abs(artwork.year - year) < Math.abs(closest.year - year)
+      ? artwork
+      : closest,
+  );
 
   return {
     ...match,
@@ -244,8 +471,20 @@ export function createFallbackArtwork(year: number): ArtworkData {
 export function createFallbackPoem(year: number): PoemData {
   const choose = (poems: PoemData[]) => poems[(Math.abs(year) + 1) % poems.length];
 
+  if (year < 1400) {
+    return choose(MEDIEVAL_FALLBACK_POEMS);
+  }
+
+  if (year < 1500) {
+    return FALLBACK_POEMS[1];
+  }
+
+  if (year < 1600) {
+    return choose(RENAISSANCE_FALLBACK_POEMS);
+  }
+
   if (year < 1750) {
-    return choose(EARLY_FALLBACK_POEMS);
+    return choose(BAROQUE_FALLBACK_POEMS);
   }
 
   if (year < 1900) {
