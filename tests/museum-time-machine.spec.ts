@@ -51,6 +51,17 @@ test("loads the museum time machine and renders an era", async ({ page }, testIn
     "transform",
     "none",
   );
+  await expect
+    .poll(async () =>
+      page.locator(".artwork-layer-current").evaluate((image) => {
+        if (!(image instanceof HTMLImageElement)) {
+          return false;
+        }
+
+        return image.complete && image.naturalWidth > 0;
+      }),
+    )
+    .toBe(true);
   await expect(page.getByRole("link", { name: "GitHub puneetdixit200" })).toHaveAttribute(
     "href",
     "https://github.com/puneetdixit200",

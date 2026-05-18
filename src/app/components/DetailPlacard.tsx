@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { X } from "lucide-react";
+import type { SyntheticEvent } from "react";
 import type { ArtworkData } from "@/lib/timeMachine";
 
 type DetailPlacardProps = {
@@ -20,6 +21,15 @@ export function DetailPlacard({
     return null;
   }
 
+  function handleImageError(event: SyntheticEvent<HTMLImageElement>) {
+    const image = event.currentTarget;
+    const fallbackUrl = artwork?.fallbackImageUrl ?? artwork?.previewImageUrl;
+
+    if (fallbackUrl && image.src !== fallbackUrl) {
+      image.src = fallbackUrl;
+    }
+  }
+
   return (
     <div className="detail-overlay" role="dialog" aria-modal="true">
       <button
@@ -31,7 +41,14 @@ export function DetailPlacard({
       >
         <X size={18} />
       </button>
-      <img className="detail-image" src={artwork.imageUrl} alt={artwork.title} />
+      <img
+        className="detail-image"
+        src={artwork.imageUrl}
+        alt={artwork.title}
+        loading="eager"
+        decoding="async"
+        onError={handleImageError}
+      />
       <section className="detail-placard">
         <p className="detail-kicker">{artwork.source}</p>
         <h2>{artwork.title}</h2>

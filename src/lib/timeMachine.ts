@@ -9,6 +9,8 @@ export type ArtworkData = {
   medium: string;
   department: string;
   imageUrl: string;
+  previewImageUrl?: string;
+  fallbackImageUrl?: string;
   source: string;
   sourceUrl?: string;
   dimensions?: string;
@@ -338,12 +340,39 @@ export function timelinePercent(year: number): number {
   );
 }
 
-export function normalizeAicImageUrl(imageId: string | null): string | null {
+export function normalizeAicImageUrl(
+  imageId: string | null,
+  width = 1200,
+): string | null {
   if (!imageId) {
     return null;
   }
 
-  return `https://www.artic.edu/iiif/2/${imageId}/full/1200,/0/default.jpg`;
+  return `https://www.artic.edu/iiif/2/${imageId}/full/${width},/0/default.jpg`;
+}
+
+export function createWikimediaThumbnailUrl(
+  imageUrl: string,
+  width = 720,
+): string {
+  try {
+    const url = new URL(imageUrl);
+    const parts = url.pathname.split("/").filter(Boolean);
+    const isCommonsOriginal =
+      url.hostname === "upload.wikimedia.org" &&
+      parts[0] === "wikipedia" &&
+      parts[1] === "commons" &&
+      parts[2] !== "thumb";
+
+    if (!isCommonsOriginal) {
+      return imageUrl;
+    }
+
+    const fileName = parts[parts.length - 1];
+    return `https://commons.wikimedia.org/wiki/Special:Redirect/file/${fileName}?width=${width}`;
+  } catch {
+    return imageUrl;
+  }
 }
 
 export function limitPoemLines(lines: string[], maxLines = 18): string[] {
@@ -465,6 +494,7 @@ export function createFallbackArtwork(year: number): ArtworkData {
   return {
     ...match,
     id: `${match.id}-${year}`,
+    previewImageUrl: createWikimediaThumbnailUrl(match.imageUrl),
   };
 }
 

@@ -5,7 +5,6 @@ import {
   type ArtworkData,
   createFallbackArtwork,
   getArtworkSearchWindows,
-  normalizeAicImageUrl,
   type YearRange,
 } from "@/lib/timeMachine";
 
@@ -31,22 +30,6 @@ type MetObjectResponse = {
   dimensions?: string;
   culture?: string;
   repository?: string;
-};
-
-type AicResponse = {
-  data?: Array<{
-    id: number;
-    title?: string;
-    artist_display?: string;
-    date_display?: string;
-    date_start?: number;
-    image_id?: string | null;
-    medium_display?: string;
-    department_title?: string;
-    api_link?: string;
-    dimensions?: string;
-    place_of_origin?: string;
-  }>;
 };
 
 type HarvardResponse = {
@@ -145,6 +128,7 @@ async function fetchMetArtwork(
       medium: object.medium || "Unknown medium",
       department: object.department || "Metropolitan Museum of Art",
       imageUrl,
+      previewImageUrl: object.primaryImageSmall || imageUrl,
       source: "The Met",
       sourceUrl: object.objectURL,
       dimensions: object.dimensions,
@@ -154,69 +138,6 @@ async function fetchMetArtwork(
   }
 
   return null;
-}
-
-async function fetchAicArtwork(
-  yearStart: number,
-  yearEnd: number,
-): Promise<ArtworkData | null> {
-  const url = new URL("https://api.artic.edu/api/v1/artworks/search");
-  url.searchParams.set("query[range][date_start][gte]", String(yearStart));
-  url.searchParams.set("query[range][date_start][lte]", String(yearEnd));
-  url.searchParams.set(
-    "fields",
-    [
-      "id",
-      "title",
-      "artist_display",
-      "date_display",
-      "date_start",
-      "image_id",
-      "medium_display",
-      "department_title",
-      "api_link",
-      "dimensions",
-      "place_of_origin",
-    ].join(","),
-  );
-  url.searchParams.set("limit", "24");
-
-  const data = await fetchJson<AicResponse>(url.toString());
-  const artworks = (data?.data ?? []).filter(
-    (artwork) =>
-      artwork.image_id &&
-      artworkDateOverlapsRange(
-        artwork.date_display,
-        artwork.date_start,
-        yearStart,
-        yearEnd,
-      ),
-  );
-  if (artworks.length === 0) {
-    return null;
-  }
-
-  const artwork = artworks[seededIndex(artworks.length, yearStart, yearEnd)];
-  const imageUrl = normalizeAicImageUrl(artwork.image_id ?? null);
-  if (!imageUrl) {
-    return null;
-  }
-
-  return {
-    id: `aic-${artwork.id}`,
-    title: artwork.title || "Untitled artwork",
-    artist: artwork.artist_display || "Unknown artist",
-    date: artwork.date_display || `${yearStart}-${yearEnd}`,
-    year: artwork.date_start || yearStart,
-    medium: artwork.medium_display || "Unknown medium",
-    department: artwork.department_title || "Art Institute of Chicago",
-    imageUrl,
-    source: "Art Institute Chicago",
-    sourceUrl: artwork.api_link,
-    dimensions: artwork.dimensions,
-    culture: artwork.place_of_origin,
-    repository: "Art Institute of Chicago",
-  };
 }
 
 async function fetchHarvardArtwork(
@@ -246,6 +167,9 @@ async function fetchHarvardArtwork(
   }
 
   const artwork = artworks[seededIndex(artworks.length, yearStart, yearEnd)];
+  const baseImageUrl = artwork.images?.[0]?.baseimageurl;
+  const imageUrl = `${baseImageUrl}?width=1600`;
+
   return {
     id: `harvard-${artwork.id}`,
     title: artwork.title || "Untitled artwork",
@@ -254,7 +178,8 @@ async function fetchHarvardArtwork(
     year: artwork.yearmade || yearStart,
     medium: artwork.medium || "Unknown medium",
     department: artwork.department || "Harvard Art Museums",
-    imageUrl: `${artwork.images?.[0]?.baseimageurl}?width=1600`,
+    imageUrl,
+    previewImageUrl: `${baseImageUrl}?width=720`,
     source: "Harvard Art Museums",
     sourceUrl: artwork.url,
     dimensions: artwork.dimensions,
@@ -283,7 +208,6 @@ export async function GET(request: Request) {
   for (const range of searchWindows) {
     artwork =
       (await fetchMetArtwork(range.start, range.end)) ??
-      (await fetchAicArtwork(range.start, range.end)) ??
       (await fetchHarvardArtwork(range.start, range.end));
 
     if (artwork) {
@@ -291,7 +215,12 @@ export async function GET(request: Request) {
     }
   }
 
-  artwork ??= fallbackArtwork;
+  artwork = artwork
+    ? {
+        ...artwork,
+        fallbackImageUrl: fallbackArtwork.previewImageUrl ?? fallbackArtwork.imageUrl,
+      }
+    : fallbackArtwork;
 
   return Response.json(artwork);
 }

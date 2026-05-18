@@ -4,6 +4,7 @@ import {
   clampYear,
   createFallbackArtwork,
   createFallbackPoem,
+  createWikimediaThumbnailUrl,
   getArtworkSearchWindows,
   limitPoemLines,
   normalizeAicImageUrl,
@@ -27,7 +28,21 @@ describe("timeMachine helpers", () => {
     expect(normalizeAicImageUrl("abc123")).toBe(
       "https://www.artic.edu/iiif/2/abc123/full/1200,/0/default.jpg",
     );
+    expect(normalizeAicImageUrl("abc123", 640)).toBe(
+      "https://www.artic.edu/iiif/2/abc123/full/640,/0/default.jpg",
+    );
     expect(normalizeAicImageUrl(null)).toBeNull();
+  });
+
+  it("builds compact Wikimedia thumbnail URLs for fast previews", () => {
+    expect(
+      createWikimediaThumbnailUrl(
+        "https://upload.wikimedia.org/wikipedia/commons/6/6a/Mona_Lisa.jpg",
+        640,
+      ),
+    ).toBe(
+      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Mona_Lisa.jpg?width=640",
+    );
   });
 
   it("limits poems to readable non-empty lines", () => {
@@ -44,6 +59,7 @@ describe("timeMachine helpers", () => {
       title: expect.any(String),
       artist: expect.any(String),
       imageUrl: expect.stringMatching(/^https:\/\//),
+      previewImageUrl: expect.stringContaining("Special:Redirect/file"),
       source: "Curated fallback",
     });
   });

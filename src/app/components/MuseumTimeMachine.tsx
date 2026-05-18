@@ -265,7 +265,9 @@ export function MuseumTimeMachine() {
             {
               left: lens.x,
               top: lens.y,
-              backgroundImage: `url(${artwork.imageUrl})`,
+              backgroundImage: `url(${
+                artwork.previewImageUrl ?? artwork.fallbackImageUrl ?? artwork.imageUrl
+              })`,
               backgroundPosition: `${lens.xPercent}% ${lens.yPercent}%`,
           } as CSSProperties
           }
