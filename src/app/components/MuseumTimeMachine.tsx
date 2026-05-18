@@ -1,6 +1,6 @@
 "use client";
 
-import { GitBranch, Search } from "lucide-react";
+import { Heart, Search } from "lucide-react";
 import {
   type CSSProperties,
   type PointerEvent,
@@ -302,11 +302,12 @@ export function MuseumTimeMachine() {
         href="https://github.com/puneetdixit200"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="GitHub puneetdixit200"
-        title="GitHub puneetdixit200"
+        aria-label="Made with love by Puneet Dixit"
+        title="Open Puneet Dixit's GitHub"
       >
-        <GitBranch size={17} />
-        <span>@puneetdixit200</span>
+        <span>Made with</span>
+        <Heart size={15} aria-hidden="true" />
+        <span>by Puneet Dixit</span>
       </a>
       {isTransitioning ? (
         <div className="loading-rune" aria-label="Loading era">
