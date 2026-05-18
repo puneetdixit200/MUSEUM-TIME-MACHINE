@@ -29,6 +29,28 @@ The app uses PoetryDB where it has reliable public-domain coverage. The 1000s th
 
 The current author and curated poem configuration lives in `src/data/eraConfig.ts` and `src/lib/timeMachine.ts`.
 
+## Voice Narration
+
+Poem reading currently uses the browser Web Speech API: `window.speechSynthesis` with `SpeechSynthesisUtterance`. The app creates one utterance per poem line, prefers an `en-GB` voice when the browser provides one, falls back to any English voice, and highlights each line as it is spoken.
+
+Current narration settings:
+
+| Setting | Value |
+| --- | --- |
+| Voice | Browser `en-GB` voice if available, otherwise any English voice |
+| Rate | `0.86` |
+| Pitch | `0.92` |
+| Volume | `0.9` |
+| Reading behavior | Line-by-line with active-line highlighting |
+
+Possible upgrades:
+
+- Add an in-app voice picker from the browser's installed voices.
+- Add era presets for rate, pitch, accent preference, and reading style.
+- Add sliders for rate, pitch, and volume.
+- Use true pause and resume with `speechSynthesis.pause()` and `speechSynthesis.resume()`.
+- Add optional cloud TTS for consistent cinematic narration across devices.
+
 ## APIs
 
 - `/api/artwork` tries The Met, Art Institute Chicago, Harvard Art Museums, then curated artwork fallbacks.
